@@ -1,61 +1,46 @@
-// id, число — идентификатор опубликованной фотографии. Это число от 1 до 25. Идентификаторы не должны повторяться.
-// url, строка — адрес картинки вида photos/{{i}}.jpg, где {{i}} — это число от 1 до 25. Адреса картинок не должны повторяться.
-// description, строка — описание фотографии. Описание придумайте самостоятельно.
-// likes, число — количество лайков, поставленных фотографии. Случайное число от 15 до 200.
-// comments, число — количество комментариев, оставленных другими пользователями к этой фотографии. Случайное число от 0 до 200.
+// Константы
+const PHOTOS_QTY = {min: 1, max: 25};
+const LIKES_QTY = {min: 15, max: 200}; //число — количество лайков, поставленных фотографии. Случайное число от 15 до 200
+const COMMENTS_QTY = {min: 0, max: 200}; // число — количество комментариев, оставленных другими пользователями к фотографии. Случайное число от 0 до 200
+const DESCRIPTION = ['Прекрасная композиция', 'Отличные цвета', 'Не уверен, что мне это нравится', 'Удивительное фото', '☮']; //описание фотографии
 
-const DESCRIPTION = [
-  'Красиво',
-  'Прекрасно',
-  'Отдых',
-  'Работа',
-  'Весело',
-  'Грустно',
-  'Радостно',
-  'Печально',
-  'Тихо',
-  'Спокойно',
-  'Неспокойно',
-  'Наслаждение',
-  'Ветрено',
-  'Холодно',
-  'Тепло',
-  'Жарко',
-  'Кайфуем',
-  'Расслабляемся',
-  'Не напрягаемся',
-  'Свобода',
-  'Солнечно',
-  'Захватывающе',
-  'Непередаваемые ощущения',
-  'Никогда такого не видел',
-  'Отличный вид'
-];
+// Функция, возвращающая случайное целое число из переданного диапазона [min, max] включительно.
 
-function getRandomPositiveInteger (a, b) {
-  if (a < 0 || b < 0) {
+const rndInteger = (min, max) => {
+  if (min < 0 || max < 0) {
     return NaN;
   }
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
+
+  const lower = Math.ceil(Math.min(min, max));
+  const upper = Math.floor(Math.max(min, max));
   const result = Math.random() * (upper - lower + 1) + lower;
 
   return Math.floor(result);
-}
 
-function checkStringLength (string, length) {
-  return string.length <= length;
-}
+};
 
-const createPhotoInfo = () => ({
-  id: getRandomPositiveInteger(1, 25),
-  url: `photos/${getRandomPositiveInteger(1, 25)}.jpg`,
-  description: DESCRIPTION[getRandomPositiveInteger(1, DESCRIPTION.length)],
-  likes: getRandomPositiveInteger(15, 200),
-  comments: getRandomPositiveInteger(0, 200)
+// Функция для проверки максимальной длины строки
+
+const strLengthValidation = (string, length) => string.length <= length;
+strLengthValidation('four', 4);
+
+//Функция возвразающая рандомный элемента массива
+
+const randomArrElement = (array) => array[rndInteger(0, array.length - 1)];
+
+// объект массива — фотография
+
+const createdPhoto = (index) => ({
+  id: index,
+  url: `photos/${index}.jpg`,
+  description: randomArrElement(DESCRIPTION),
+  likes: rndInteger(LIKES_QTY.min, LIKES_QTY.max),
+  comments: rndInteger(COMMENTS_QTY.min, COMMENTS_QTY.max),
 });
 
-const similarPhotoInfo = Array.from({length: 25}, createPhotoInfo);
+const getPhotos = () =>
+  Array.from({ length: PHOTOS_QTY.max }, (_, photoIndex) =>
+    createdPhoto(photoIndex + 1)
+  );
 
-console.log(similarPhotoInfo);
-
+console.log(getPhotos());
